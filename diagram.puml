@@ -1,0 +1,122 @@
+
+'https://plantuml.com/activity-diagram-beta
+
+@startuml
+  rectangle x as x
+  rectangle tok_embedding as te
+  rectangle pos_embedding as pe
+  rectangle "+"
+  rectangle dropout
+  rectangle "12 x blocks" as blks
+
+  rectangle "block" {
+  rectangle x2
+  rectangle x3
+  rectangle x4
+  rectangle layer_norm as ln1
+  rectangle CausalSelfAttention as att
+  rectangle layer_norm2 as ln2
+  rectangle FFN
+  }
+
+  rectangle CausalSelfAttention {
+  rectangle linear_in
+  rectangle scaled_dot_product_attention as sdpa
+  rectangle mask
+  rectangle softmax
+  rectangle attn_dropout
+  rectangle weighted_avg_value as wav
+  rectangle linear_out
+  rectangle resid_dropout
+  }
+
+  rectangle ffn {
+  rectangle linear_in1
+  rectangle new_gelu
+  rectangle linear_out1
+  rectangle ffn_dropout
+  }
+  rectangle layer_norm3 as ln3
+  rectangle linear
+
+  FFN -left-> ffn
+  linear_in1 -down-> new_gelu
+  new_gelu -down-> linear_out1
+  linear_out1 -down-> ffn_dropout
+
+  att -right-> CausalSelfAttention
+  linear_in -down-> sdpa
+  sdpa -down-> mask
+  mask -down-> softmax
+  softmax -down-> attn_dropout
+  attn_dropout -down-> wav
+  wav -down-> linear_out
+  linear_out -down->resid_dropout
+
+  x -down-> te
+  x -down-> pe
+  te -down-> "+"
+  pe -down-> "+"
+  "+" -down-> "dropout"
+  "dropout" -down-> blks
+  blks -left-> x2
+
+  x2 -down-> ln1
+  ln1 -down-> att
+  att -down-> x3
+  x2 -down-> x3
+  x3 -down-> ln2
+  ln2 -down-> FFN
+  x3 -down-> x4
+  FFN -down-> x4
+  x4 -up-> x2
+
+  blks -down-> ln3
+  ln3 -down-> linear
+
+
+
+
+
+
+
+
+
+
+@enduml
+
+
+'start
+':ClickServlet.handleRequest();
+':new page;
+'if (Page.onSecurityCheck) then (true)
+'  :Page.onInit();
+'  if (isForward?) then (no)
+'    :Process controls;
+'    if (continue processing?) then (no)
+'      stop
+'    endif
+'
+'    if (isPost?) then (yes)
+'      :Page.onPost();
+'    else (no)
+'      :Page.onGet();
+'    endif
+'    :Page.onRender();
+'  endif
+'else (false)
+'endif
+'
+'if (do redirect?) then (yes)
+'  :redirect process;
+'else
+'  if (do forward?) then (yes)
+'    :Forward request;
+'  else (no)
+'    :Render page template;
+'  endif
+'endif
+'
+'stop
+
+
